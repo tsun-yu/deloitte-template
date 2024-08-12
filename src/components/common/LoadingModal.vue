@@ -1,31 +1,31 @@
 <script setup>
-import { ref, onBeforeUnmount, onMounted } from "vue";
-import { VueSpinner } from "vue3-spinners";
+import { ref, onBeforeUnmount, onMounted } from 'vue';
+import { VueSpinner } from 'vue3-spinners';
 const { msg, hasDotAnimation } = defineProps({
   msg: {
     type: String,
-    default: "處理中...",
+    default: '處理中...'
   },
   modalColor: {
     type: String,
-    default: "#fff",
+    default: '#fff'
   },
   spinnerColor: {
     type: String,
-    default: "var(--color-teal6)",
+    default: 'var(--color-teal6)'
   },
   fontColor: {
     type: String,
-    default: "#545454",
+    default: '#545454'
   },
   hasDotAnimation: {
     type: Boolean,
-    default: true,
+    default: false
   },
   showLoading: {
     type: Boolean,
-    default: true,
-  },
+    default: true
+  }
 });
 
 const msgShow = ref(msg);
@@ -34,9 +34,7 @@ let typing;
 const dotAnimation = () => {
   let index = 0;
   return setInterval(() => {
-    msgShow.value =
-      msg.slice(0, msgLength - 3) +
-      msg.slice(msgLength - 3, msgLength - 3 + index);
+    msgShow.value = msg.slice(0, msgLength - 3) + msg.slice(msgLength - 3, msgLength - 3 + index);
     console.log(msgShow.value);
     index++;
     if (index === 4) {
@@ -47,10 +45,12 @@ const dotAnimation = () => {
 
 onMounted(() => {
   typing = hasDotAnimation ? dotAnimation() : null;
+  document.body.style.overflow = 'hidden';
 });
 
 onBeforeUnmount(() => {
   clearInterval(typing);
+  document.body.style.overflow = 'auto';
 });
 </script>
 
@@ -88,10 +88,11 @@ onBeforeUnmount(() => {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 9999;
   display: grid;
   place-content: center;
+  backdrop-filter: blur(2px);
 
   .loading__modal {
     background-color: v-bind(modalColor);

@@ -63,7 +63,7 @@ const hasData = computed(() => {
       <slot name="labelName"></slot>
     </label>
     <span class="requiredTag" v-if="!hasData && (isRequired || otherChecked)">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> 必填</span
+      <v-icon name="ri-error-warning-fill" /> 必填</span
     >
     <div class="radioGroup">
       <div class="radioOpt" v-for="(v, i) of radioOpts" :key="id + i">
@@ -102,7 +102,7 @@ const hasData = computed(() => {
           placeholder="請輸入"
         />
         <p class="errStr">
-          <font-awesome-icon :icon="[' fas', 'circle-exclamation']" />
+          <v-icon name="ri-error-warning-fill" />
           不可包含: &#92; &#47; &#42; &#63; &quot; &lt; &gt; &#124; &amp; &#36; &#61; &#37;
         </p>
       </div>

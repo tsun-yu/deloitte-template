@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect, watch } from 'vue';
+import { ref, computed } from 'vue';
 
 const otherChecked = ref(false);
 const hasSelected = computed(() => {
@@ -74,7 +74,7 @@ const hasData = computed(() => {
       <slot name="labelName"></slot>
     </label>
     <span class="requiredTag" v-if="!hasData && (isRequired || otherChecked)">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> 必填</span
+      <v-icon name="ri-error-warning-fill" /> 必填</span
     >
     <input class="chekcHasSelected" type="checkbox" :required="isRequired" :checked="hasSelected" />
     <div class="checkboxGroup">
@@ -112,7 +112,7 @@ const hasData = computed(() => {
           placeholder="請輸入"
         />
         <p class="errStr">
-          <font-awesome-icon :icon="[' fas', 'circle-exclamation']" />
+          <v-icon name="ri-error-warning-fill" />
           不可包含: &#92; &#47; &#42; &#63; &quot; &lt; &gt; &#124; &amp; &#36; &#61; &#37;
         </p>
       </div>

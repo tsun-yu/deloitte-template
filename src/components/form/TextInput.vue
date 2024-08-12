@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 
 defineProps({
   inputWidth: {
@@ -59,14 +59,12 @@ const hasData = computed(() => {
       </label>
     </div>
     <p class="errStr">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
+      <v-icon name="ri-error-warning-fill" />
       <slot name="errorSting"
         >不可包含: &#92; &#47; &#42; &#63; &quot; &lt; &gt; &#124; &amp; &#36; &#61; &#37;</slot
       >
     </p>
-    <p class="requiredTag" v-if="isRequired">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> 必填
-    </p>
+    <p class="requiredTag" v-if="isRequired"><v-icon name="ri-error-warning-fill" /> 必填</p>
   </div>
 </template>
 

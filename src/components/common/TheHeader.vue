@@ -195,6 +195,7 @@ header {
       border-left: 0.25rem solid var(--color-deloitte);
       color: #fff;
       font-size: 1.5rem;
+      font-weight: 700;
       padding-left: 0.5rem;
       line-height: 1.5rem;
       overflow: hidden;

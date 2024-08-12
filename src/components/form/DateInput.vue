@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watchEffect } from 'vue';
+import { computed } from 'vue';
 
 defineProps({
   inputWidth: {
@@ -13,6 +13,10 @@ defineProps({
   id: {
     type: String,
     required: true
+  },
+  inputType: {
+    type: String,
+    default: 'date'
   }
 });
 
@@ -30,7 +34,7 @@ const hasData = computed(() => {
     <div class="formGroup__input">
       <input
         ref="input"
-        type="date"
+        :type="inputType"
         :id="id"
         :required="isRequired"
         v-model="data"
@@ -41,12 +45,10 @@ const hasData = computed(() => {
       </label>
     </div>
     <p class="errStr">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" />
+      <v-icon name="ri-error-warning-fill" />
       <slot name="errorSting"></slot>
     </p>
-    <p class="requiredTag" v-if="isRequired">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> 必填
-    </p>
+    <p class="requiredTag" v-if="isRequired"><v-icon name="ri-error-warning-fill" /> 必填</p>
   </div>
 </template>
 
@@ -81,7 +83,7 @@ const hasData = computed(() => {
         outline: none;
 
         + label {
-          transform: translateY(-195%);
+          transform: translateY(-170%);
           font-size: 0.8125rem;
           width: auto;
           left: 0.5rem;

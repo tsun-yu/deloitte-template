@@ -45,9 +45,7 @@ const hasData = computed(() => {
         <slot name="labelName"></slot>
       </label>
     </div>
-    <p class="requiredTag" v-if="isRequired">
-      <font-awesome-icon :icon="['fas', 'circle-exclamation']" /> 必填
-    </p>
+    <p class="requiredTag" v-if="isRequired"><v-icon name="ri-error-warning-fill" /> 必填</p>
   </div>
 </template>
 

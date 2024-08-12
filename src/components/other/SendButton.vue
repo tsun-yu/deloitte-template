@@ -1,10 +1,10 @@
 <script setup>
-import { ref, computed, watchEffect, watch, onMounted } from "vue";
+import { ref, onMounted } from 'vue';
 
 defineProps({
   clickFunc: { type: Function },
-  backgroundColor: { type: String, default: "var(--color-blue4-1)" },
-  borderRadius: { type: String, default: "5px" },
+  backgroundColor: { type: String, default: 'var(--color-blue4-1)' },
+  borderRadius: { type: String, default: '5px' }
 });
 const button = ref(null);
 const rippleTop = ref(0);
@@ -13,20 +13,19 @@ const rippleScale = ref(0);
 const rippleOpacity = ref(0);
 
 onMounted(() => {
-  button.value.addEventListener("mousedown", (e) => {
-    rippleTop.value = e.offsetY + "px";
-    rippleLeft.value = e.offsetX + "px";
+  button.value.addEventListener('mousedown', (e) => {
+    rippleTop.value = e.offsetY + 'px';
+    rippleLeft.value = e.offsetX + 'px';
     rippleOpacity.value = 1;
     rippleScale.value = 100;
   });
-  button.value.addEventListener("mouseenter", (e) => {
-    console.log("ininder");
-    if (rippleOpacity) {
+  button.value.addEventListener('mouseenter', () => {
+    if (rippleOpacity.value) {
       rippleOpacity.value = 0;
       rippleScale.value = 0;
     }
   });
-  button.value.addEventListener("mouseup", (e) => {
+  button.value.addEventListener('mouseup', () => {
     setTimeout(() => {
       rippleOpacity.value = 0;
       rippleScale.value = 0;
@@ -77,11 +76,12 @@ button {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    font-weight: 600;
     /* z-index: 1; */
   }
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: v-bind(rippleTop);
     left: v-bind(rippleLeft);

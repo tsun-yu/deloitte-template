@@ -1,7 +1,12 @@
 <script setup>
 import TheHeader from '@/components/common/TheHeader.vue';
 import TheFooter from '@/components/common/TheFooter.vue';
-import TheNavbar from './components/common/TheNavbar.vue';
+// import TheNavbar from './components/common/TheNavbar.vue';
+// import { useLoginStore } from '@/stores/login';
+// import { fetchData } from '@/Util/fetch';
+// fetchData();
+// const store = useLoginStore();
+// store.increment();
 </script>
 
 <template>
@@ -10,10 +15,10 @@ import TheNavbar from './components/common/TheNavbar.vue';
     :userDropdownLinks="userDropdownLinks"
     v-model:isExpanded="isExpanded"
   >
-    <template #system>某急件專案</template>
+    <template #system>專案名稱</template>
     <template #userName>Wayne T. Huang</template>
   </TheHeader>
-  <TheNavbar :backgroundColor="'var(--color-green5)'" :sidebarLinks="sidebarLinks" />
+  <!-- <TheNavbar :backgroundColor="'var(--color-green5)'" :sidebarLinks="sidebarLinks" /> -->
   <main>
     <router-view />
   </main>
