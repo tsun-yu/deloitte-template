@@ -28,6 +28,10 @@ defineProps({
   autocomplete: {
     type: String,
     default: 'on'
+  },
+  rows: {
+    type: Number,
+    default: 5
   }
 });
 
@@ -50,8 +54,8 @@ const hasData = computed(() => {
         v-model.trim="data"
         :pattern="pattern"
         :class="{ hasData }"
-        :autocomplete="autocomplete"
-        rows="10"
+        :autocomplete
+        :rows
       ></textarea>
       <label :for="id">
         <slot name="labelName"></slot>
