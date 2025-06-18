@@ -18,6 +18,10 @@ defineProps({
     type: String,
     required: true
   },
+  name: {
+    type: String,
+    required: true
+  },
   pattern: {
     type: String,
     default: '[^\\/\\\\\\|*?&$=%<>"]*'
@@ -48,8 +52,8 @@ const hasData = computed(() => {
   <div class="formGroup">
     <div class="formGroup__input">
       <textarea
-        name=""
         :required="isRequired"
+        :name
         :id="id"
         v-model.trim="data"
         :pattern="pattern"
