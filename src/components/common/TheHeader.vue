@@ -57,7 +57,6 @@ defineProps({
       <img src="../../assets/logo/logo-cn.png" alt="" />
     </div>
   </header>
-  <nav></nav>
 </template>
 
 <style lang="scss" scoped>
@@ -68,6 +67,7 @@ header {
   padding-inline: 1rem;
   position: sticky;
   top: 0;
+  z-index: 999;
 
   .header__logo {
     flex: 0 1 8rem;

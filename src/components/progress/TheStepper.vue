@@ -1,10 +1,12 @@
 <script setup>
-import { computed } from 'vue';
+import { ref } from 'vue';
+import { onMounted } from 'vue';
+import { computed, toRefs } from 'vue';
 
-const { status, progressSteps } = defineProps({
+const props = defineProps({
   bgColor: {
     type: String,
-    default: 'var(--color-teal1)'
+    default: '#fff'
   },
   activeColor: {
     type: String,
@@ -14,9 +16,12 @@ const { status, progressSteps } = defineProps({
     type: String,
     default: 'var(--color-green5)'
   },
-  status: {
+  latesStep: {
     type: String,
     default: ''
+  },
+  status: {
+    type: Object
   },
   /* example of progressSteps
     [
@@ -33,13 +38,42 @@ const { status, progressSteps } = defineProps({
   }
 });
 
+const { progressSteps, latesStep, status } = toRefs(props);
+
+const currntStep = defineModel('currntStep', {
+  type: String
+});
+
+const scaleDown = ref(false);
+
 const activeIndex = computed(() => {
-  return progressSteps.findIndex((step) => step.status === status);
+  return progressSteps.value.findIndex((step) => step.status === latesStep.value);
+});
+
+const currStepHandler = (step) => {
+  if (step === currntStep.value) return;
+  if (step === latesStep.value) {
+    currntStep.value = step;
+    return;
+  }
+  if (status.value[step] === 'inactive') return;
+
+  currntStep.value = step;
+};
+onMounted(() => {
+  window.addEventListener('scroll', () => {
+    console.log('scrollY', window.scrollY);
+    if (window.scrollY > 150) {
+      scaleDown.value = true;
+      return;
+    }
+    scaleDown.value = false;
+  });
 });
 </script>
 
 <template>
-  <div class="progress">
+  <div class="progress" :class="{ 'progress--scaleDown': scaleDown }">
     <div
       class="progress__item"
       :class="{
@@ -48,6 +82,7 @@ const activeIndex = computed(() => {
       }"
       v-for="(step, idx) of progressSteps"
       :key="'progressSteps' + idx"
+      @click="currStepHandler(step.status)"
     >
       <div class="progress__stepWrap">
         <div
@@ -84,14 +119,81 @@ const activeIndex = computed(() => {
   display: flex;
   align-items: center;
   box-shadow: 0 10px 20px #0000001c;
+  transition: transform 0.3s ease-in-out;
+  height: 11.375rem;
 
   &:hover {
-    .progress__item.progress__item--active {
-      flex-shrink: 1;
+    transform: scale(1);
+    border-radius: 1rem;
+
+    .progress__item {
+      padding-inline: 1.25rem;
+      .progress__stepWrap {
+        transform: scale(1);
+        left: 0;
+        margin-bottom: 1.5rem;
+        .progress__stepLine {
+          left: 4.5rem;
+          width: calc(100% - 4.5rem);
+        }
+        .progress__stepLine--active {
+          left: 4.5rem;
+          width: calc((100% - 4.5rem) / 2);
+          animation: loading 2s ease-in-out infinite;
+        }
+      }
+
+      .progress__item.progress__item--active {
+        flex-shrink: 1;
+      }
+
+      .progress__title,
+      .progress__subtitle {
+        display: block;
+      }
     }
   }
+  &--scaleDown {
+    position: sticky;
+    top: 3.5rem;
+    z-index: 1000;
+    border-radius: 10rem;
+    transform: scale(0.3);
+    box-shadow:
+      0 10px 50px rgba(0, 0, 0, 0.17),
+      0 12px 10px rgb(0 0 0 / 10%),
+      0 2px 5px rgb(0 0 0 / 10%);
 
-  .progress__item {
+    .progress__item {
+      padding-inline: 0;
+      .progress__stepWrap {
+        left: 50%;
+        margin-bottom: 0;
+        .progress__stepLine {
+          position: absolute;
+          top: 50%;
+          left: 2rem;
+          transform: translateY(-50%);
+          width: calc(100% - 2rem);
+          height: 4px;
+          border-radius: 2px;
+          background-color: var(--color-blue1);
+          background-color: #eee;
+        }
+        .progress__stepLine--active {
+          left: 2rem;
+          width: calc((100% - 2rem) / 2);
+          animation: loading--min 2s ease-in-out infinite;
+        }
+      }
+
+      .progress__title,
+      .progress__subtitle {
+        display: none;
+      }
+    }
+  }
+  &__item {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -106,21 +208,29 @@ const activeIndex = computed(() => {
     }
     &.progress__item--active {
       flex-shrink: 0;
-
+      .progress__title {
+        color: #333;
+      }
       .progress__subtitle:last-child {
         color: v-bind(activeColor);
+        background-color: #0076a81c;
       }
     }
 
     &.progress__item--completed {
+      .progress__title {
+        color: #333;
+      }
       .progress__subtitle:last-child {
         color: v-bind(completeColor);
+        background-color: #ebfbf2;
       }
     }
 
     &:last-child {
-      .progress__stepLine {
-        display: none;
+      .progress__stepLine,
+      .progress__stepLine--active {
+        display: none !important;
       }
     }
 
@@ -135,7 +245,9 @@ const activeIndex = computed(() => {
         aspect-ratio: 1;
         border-radius: 50%;
         background-color: var(--color-blue1);
+        background-color: #eee;
         color: var(--color-blue2);
+        color: var(--color-gray6);
 
         &.progress__step--active {
           background-color: v-bind(activeColor);
@@ -190,6 +302,7 @@ const activeIndex = computed(() => {
         height: 4px;
         border-radius: 2px;
         background-color: var(--color-blue1);
+        background-color: #eee;
       }
 
       .progress__stepLine--active {
@@ -210,7 +323,8 @@ const activeIndex = computed(() => {
       font-size: 1.125rem;
       font-weight: 700;
       color: var(--color-teal7);
-      margin: 0.5rem 0 0.25rem;
+      color: var(--color-gray6);
+      margin: 0.5rem 0;
     }
 
     .progress__title,
@@ -226,6 +340,10 @@ const activeIndex = computed(() => {
 
       &:last-child {
         font-weight: 700;
+        width: fit-content;
+        padding: 0.25rem 0.5rem;
+        border-radius: 1rem;
+        background-color: #eee;
       }
     }
   }
@@ -248,6 +366,14 @@ const activeIndex = computed(() => {
   }
   100% {
     width: calc((100% - 4.5rem) / 2);
+  }
+}
+@keyframes loading--min {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: calc((100% - 2rem) / 2);
   }
 }
 </style>
