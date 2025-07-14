@@ -35,6 +35,10 @@ const props = defineProps({
   progressSteps: {
     type: Array,
     default: () => []
+  },
+  paddingInline: {
+    type: String,
+    default: '1.25rem'
   }
 });
 
@@ -62,7 +66,6 @@ const currStepHandler = (step) => {
 };
 onMounted(() => {
   window.addEventListener('scroll', () => {
-    console.log('scrollY', window.scrollY);
     if (window.scrollY > 150) {
       scaleDown.value = true;
       return;
@@ -119,26 +122,43 @@ onMounted(() => {
   display: flex;
   align-items: center;
   box-shadow: 0 10px 20px #0000001c;
-  transition: transform 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
   height: 11.375rem;
 
   &:hover {
     transform: scale(1);
     border-radius: 1rem;
+    backdrop-filter: blur(2px);
+    box-shadow: 0 10px 20px #0000001c;
 
     .progress__item {
-      padding-inline: 1.25rem;
+      padding-inline: v-bind(paddingInline);
+      align-items: stretch;
+
       .progress__stepWrap {
         transform: scale(1);
-        left: 0;
         margin-bottom: 1.5rem;
+
+        .progress__step {
+          transform: scale(1);
+
+          &.progress__step--active {
+            animation: pulse 2s linear infinite;
+
+            & ~ .progress__stepLine--active {
+              display: block;
+            }
+          }
+        }
+
         .progress__stepLine {
-          left: 4.5rem;
-          width: calc(100% - 4.5rem);
+          display: block;
+          left: calc(2rem + v-bind(paddingInline) * 2);
+          width: calc(100% - 2rem - v-bind(paddingInline) * 2);
         }
         .progress__stepLine--active {
-          left: 4.5rem;
-          width: calc((100% - 4.5rem) / 2);
+          left: calc(2rem + v-bind(paddingInline) * 2);
+          width: calc(100% - 2rem - v-bind(paddingInline) * 2);
           animation: loading 2s ease-in-out infinite;
         }
       }
@@ -158,18 +178,40 @@ onMounted(() => {
     top: 3.5rem;
     z-index: 1000;
     border-radius: 10rem;
-    transform: scale(0.3);
-    box-shadow:
+    transform: scale(0.25);
+    /* box-shadow:
       0 10px 50px rgba(0, 0, 0, 0.17),
       0 12px 10px rgb(0 0 0 / 10%),
-      0 2px 5px rgb(0 0 0 / 10%);
+      0 2px 5px rgb(0 0 0 / 10%); */
+    box-shadow:
+      20px 92px 60px -20px rgba(0, 0, 0, 0.25),
+      0 8px 28px rgba(0, 0, 0, 0.1);
+    background-color: #ffffffa3;
+    backdrop-filter: blur(8px);
 
     .progress__item {
       padding-inline: 0;
+      align-items: center;
+
       .progress__stepWrap {
-        left: 50%;
         margin-bottom: 0;
+
+        .progress__step {
+          transform: scale(2.5);
+
+          &.progress__step--active {
+            & ~ .progress__stepLine--active {
+              display: none;
+            }
+          }
+
+          &.progress__step--active {
+            animation: pulse--min 2s linear infinite;
+          }
+        }
+
         .progress__stepLine {
+          display: none;
           position: absolute;
           top: 50%;
           left: 2rem;
@@ -179,11 +221,6 @@ onMounted(() => {
           border-radius: 2px;
           background-color: var(--color-blue1);
           background-color: #eee;
-        }
-        .progress__stepLine--active {
-          left: 2rem;
-          width: calc((100% - 2rem) / 2);
-          animation: loading--min 2s ease-in-out infinite;
         }
       }
 
@@ -199,7 +236,7 @@ onMounted(() => {
     flex-direction: column;
     position: relative;
     min-width: 0;
-    padding-inline: 1.25rem;
+    padding-inline: v-bind(paddingInline);
     transition: 0.3s ease-in-out;
     cursor: pointer;
 
@@ -248,6 +285,7 @@ onMounted(() => {
         background-color: #eee;
         color: var(--color-blue2);
         color: var(--color-gray6);
+        transition: 0.3s ease-in-out;
 
         &.progress__step--active {
           background-color: v-bind(activeColor);
@@ -296,9 +334,9 @@ onMounted(() => {
       .progress__stepLine {
         position: absolute;
         top: 50%;
-        left: 4.5rem;
+        left: calc(2rem + v-bind(paddingInline) * 2);
+        width: calc(100% - 2rem - v-bind(paddingInline) * 2);
         transform: translateY(-50%);
-        width: calc(100% - 4.5rem);
         height: 4px;
         border-radius: 2px;
         background-color: var(--color-blue1);
@@ -309,14 +347,23 @@ onMounted(() => {
         display: none;
         position: absolute;
         top: 50%;
-        left: 4.5rem;
+        left: calc(2rem + v-bind(paddingInline) * 2);
+        width: calc((100% - 2rem - v-bind(paddingInline) * 2) / 2);
         transform: translateY(-50%);
-        width: calc((100% - 4.5rem) / 2);
         height: 4px;
         border-radius: 2px;
         background-color: v-bind(activeColor);
         animation: loading 2s ease-in-out infinite;
       }
+    }
+
+    .progress__title,
+    .progress__subtitle {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 0.75rem;
+      color: var(--color-gray6);
     }
 
     .progress__title {
@@ -327,24 +374,12 @@ onMounted(() => {
       margin: 0.5rem 0;
     }
 
-    .progress__title,
-    .progress__subtitle {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
-    }
-
-    .progress__subtitle {
-      font-size: 0.75rem;
-      color: var(--color-gray6);
-
-      &:last-child {
-        font-weight: 700;
-        width: fit-content;
-        padding: 0.25rem 0.5rem;
-        border-radius: 1rem;
-        background-color: #eee;
-      }
+    p.progress__subtitle {
+      font-weight: 700;
+      max-width: fit-content;
+      padding: 0.25rem 0.5rem;
+      border-radius: 1rem;
+      background-color: #eee;
     }
   }
 }
@@ -360,20 +395,31 @@ onMounted(() => {
     transform: scale(1);
   }
 }
+@keyframes pulse--min {
+  0% {
+    transform: scale(2.5);
+  }
+  50% {
+    transform: scale(2);
+  }
+  100% {
+    transform: scale(2.5);
+  }
+}
 @keyframes loading {
   0% {
     width: 0;
   }
   100% {
-    width: calc((100% - 4.5rem) / 2);
+    width: calc((100% - 2rem - v-bind(paddingInline) * 2) / 2);
   }
 }
-@keyframes loading--min {
+/* @keyframes loading--min {
   0% {
     width: 0;
   }
   100% {
     width: calc((100% - 2rem) / 2);
   }
-}
+} */
 </style>
